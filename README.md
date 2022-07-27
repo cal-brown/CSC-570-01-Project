@@ -1,18 +1,13 @@
 # Baba Is Smart
 
-> Course: Cal Poly CSC 570-01 \
-> Professor: Rodrigo Canaan \
-> Term: Spring 2022
-
 A model zoo of level-solving agents:
 
 - A\*
 - IDA\*
 - IDAQ\*
 - Soft Actor Critic
-- I2A
 
-We also provide utilites for convering between the Keke Competition and the `baba-is-auto` formats.
+We also provide utilities for converting between the Keke Competition and the `baba-is-auto` formats.
 
 ## Getting started
 
