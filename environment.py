@@ -190,8 +190,8 @@ class BabaEnv(gym.Env):
             op_obj = op_obj.GetTypes()[0]
             prop_obj = prop_obj.GetTypes()[0]
 
-            print("immovable_obj")
-            print(noun_obj, op_obj, prop_obj)
+            #print("immovable_obj")
+            #print(noun_obj, op_obj, prop_obj)
             noun_obj_pos, op_obj_pos, prop_obj_pos = rule_pos
 
             is_at_corners = False
@@ -281,7 +281,7 @@ class BabaEnv(gym.Env):
                         immovable_objs[prop_obj].add(prop_obj_pos)
                     else:
                         immovable_objs[prop_obj] = {prop_obj_pos}
-            print(immovable_objs)
+            #print(immovable_objs)
             # TODO: add it to get usable objects
             # TODO: when forming a new rule, filter out those not movable
         return immovable_objs
@@ -636,36 +636,38 @@ class ProgressiveTrainingEnv(PropertyBasedEnv):
         self.episode_range = episode_range
         self.patience = patience
         self.episode = 0
+        self.wins = 0
         self.level_idx = 0
         self.score = 0
         self.level_history = {}
+        self.level_changed = True
         self.max_stage_size = max_stage_size
         self.observation_space = spaces.MultiBinary(self.get_obs().shape)
         
 
     def next_level(self):
-        self.level_history[self.levels[self.level_idx]] = {"episodes": self.episode, "score": self.avg_score()}
+        self.level_history[self.levels[self.level_idx]] = {"episodes": self.episode, "score": self.avg_score(), "wins": self.wins}
+        print(self.level_history)
+        self.level_changed = True
         self.score_history = []
         self.episode = 0
+        self.wins = 0
         self.level_idx +=1
-        if not self.training_is_complete():
+        if not self.levels_complete():
             super().__init__(self.levels[self.level_idx], self.enable_render, False)
             print("ProgressiveTrainingEnv: Moving to level ", self.levels[self.level_idx])
 
 
     def avg_score(self,window_size=100):
         return np.mean(self.score_history[-window_size:])
-
-    def pad_stage(self, data):
-        pass
-
-
     
     def step(self, action):
         next_obs, reward, done, info = super().step(action)
         self.score += reward
+        self.level_changed = True
         if done:
             self.episode +=1
+            self.wins +=1
             self.score_history.append(self.score)
             self.score = 0
             h_size = len(self.score_history)
@@ -677,7 +679,7 @@ class ProgressiveTrainingEnv(PropertyBasedEnv):
                 self.next_level()
         return next_obs, reward, done, info
     
-    def training_is_complete(self) -> bool:
+    def levels_complete(self) -> bool:
         return len(self.levels) <= self.level_idx
 
     def get_report(self):
