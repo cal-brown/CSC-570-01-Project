@@ -190,8 +190,8 @@ class BabaEnv(gym.Env):
             op_obj = op_obj.GetTypes()[0]
             prop_obj = prop_obj.GetTypes()[0]
 
-            print("immovable_obj")
-            print(noun_obj, op_obj, prop_obj)
+            #print("immovable_obj")
+            #print(noun_obj, op_obj, prop_obj)
             noun_obj_pos, op_obj_pos, prop_obj_pos = rule_pos
 
             is_at_corners = False
@@ -281,7 +281,7 @@ class BabaEnv(gym.Env):
                         immovable_objs[prop_obj].add(prop_obj_pos)
                     else:
                         immovable_objs[prop_obj] = {prop_obj_pos}
-            print(immovable_objs)
+            #print(immovable_objs)
             # TODO: add it to get usable objects
             # TODO: when forming a new rule, filter out those not movable
         return immovable_objs

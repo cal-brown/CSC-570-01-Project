@@ -251,6 +251,7 @@ if __name__ == "__main__":
                 sleep(0.2)
             level_performance[level] = {"score": score, "steps": steps, "won": reward > 0}
         except:
+            level_performance[level] = {"score": -100, "won": False}
             continue
     with open(f"{os.path.split(__file__)[0]}/../Results/ida_star_results.json", "w") as f:
         json.dump(level_performance,f)
